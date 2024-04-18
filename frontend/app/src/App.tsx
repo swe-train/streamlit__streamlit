@@ -560,7 +560,7 @@ export class App extends PureComponent<Props, State> {
 
     if (newState === ConnectionState.CONNECTED) {
       logMessage("Reconnected to server; requesting a script run")
-      this.widgetMgr.sendUpdateWidgetsMessage()
+      this.widgetMgr.sendUpdateWidgetsMessage(undefined)
       this.setState({ dialog: null })
     } else {
       setCookie("_streamlit_xsrf", "")
@@ -1307,7 +1307,7 @@ export class App extends PureComponent<Props, State> {
       this.saveSettings({ ...this.state.userSettings, runOnSave: true })
     }
 
-    this.widgetMgr.sendUpdateWidgetsMessage()
+    this.widgetMgr.sendUpdateWidgetsMessage(undefined)
   }
 
   sendLoadGitInfoBackMsg = (): void => {
