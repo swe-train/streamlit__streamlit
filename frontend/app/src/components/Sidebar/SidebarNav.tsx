@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import React, { ReactElement, useCallback, useRef, useState } from "react"
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { AppContext } from "@streamlit/app/src/components/AppContext"
 // We import react-device-detect in this way so that tests can mock its
 // isMobile field sanely.
@@ -56,7 +62,7 @@ const SidebarNav = ({
   onPageChange,
 }: Props): ReactElement | null => {
   const { pageLinkBaseUrl } = React.useContext(AppContext)
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(hasSidebarElements ? false : true)
   const navItemsRef = useRef<HTMLUListElement>(null)
   const isOverflowing = useIsOverflowing(navItemsRef, expanded)
 
@@ -67,6 +73,15 @@ const SidebarNav = ({
       setExpanded(false)
     }
   }, [expanded, isOverflowing])
+
+  useEffect(() => {
+    if (hasSidebarElements && expanded) {
+      setExpanded(false)
+    }
+    if (!hasSidebarElements && !expanded) {
+      setExpanded(true)
+    }
+  }, [currentPageScriptHash, hasSidebarElements])
 
   if (appPages.length < 2) {
     return null

@@ -78,7 +78,7 @@ export interface StyledSidebarNavItemsProps {
 export const StyledSidebarNavItems = styled.ul<StyledSidebarNavItemsProps>(
   ({ isExpanded, theme }) => {
     return {
-      maxHeight: isExpanded ? "none" : "26vh",
+      maxHeight: isExpanded ? "none" : "27vh",
       listStyle: "none",
       overflow: "hidden",
       margin: 0,
