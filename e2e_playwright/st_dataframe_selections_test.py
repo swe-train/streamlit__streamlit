@@ -95,6 +95,10 @@ def _get_fragment_df(app: Page) -> Locator:
     return app.get_by_test_id("stDataFrame").nth(7)
 
 
+def _get_df_with_index(app: Page) -> Locator:
+    return app.get_by_test_id("stDataFrame").nth(8)
+
+
 def test_single_row_select(app: Page):
     canvas = _get_single_row_select_df(app)
 
@@ -103,7 +107,7 @@ def test_single_row_select(app: Page):
     wait_for_app_run(app)
 
     expected = (
-        "Dataframe single-row selection: {'select': {'rows': [0], 'columns': []}}"
+        "Dataframe single-row selection: {'selection': {'rows': [0], 'columns': []}}"
     )
     selection_text = app.get_by_test_id("stMarkdownContainer").filter(has_text=expected)
     expect(selection_text).to_have_count(1)
@@ -113,7 +117,7 @@ def test_single_row_select(app: Page):
     _expect_written_text(
         app,
         "Dataframe single-row selection:",
-        "{'select': {'rows': [1], 'columns': []}}",
+        "{'selection': {'rows': [1], 'columns': []}}",
     )
 
 
@@ -126,7 +130,7 @@ def test_single_column_select(app: Page):
     _expect_written_text(
         app,
         "Dataframe single-column selection:",
-        "{'select': {'rows': [], 'columns': ['col_1']}}",
+        "{'selection': {'rows': [], 'columns': ['col_1']}}",
     )
 
     _click_on_column_selector(canvas, 2)
@@ -134,7 +138,7 @@ def test_single_column_select(app: Page):
     _expect_written_text(
         app,
         "Dataframe single-column selection:",
-        "{'select': {'rows': [], 'columns': ['col_2']}}",
+        "{'selection': {'rows': [], 'columns': ['col_2']}}",
     )
 
 
@@ -148,7 +152,7 @@ def test_multi_row_select(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row selection:",
-        "{'select': {'rows': [0, 2], 'columns': []}}",
+        "{'selection': {'rows': [0, 2], 'columns': []}}",
     )
 
 
@@ -162,7 +166,7 @@ def test_multi_row_select_all_at_once(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row selection:",
-        "{'select': {'rows': [0, 1, 2, 3, 4], 'columns': []}}",
+        "{'selection': {'rows': [0, 1, 2, 3, 4], 'columns': []}}",
     )
 
 
@@ -184,7 +188,7 @@ def test_multi_row_by_keeping_mouse_pressed(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row selection:",
-        "{'select': {'rows': [1, 2, 3], 'columns': []}}",
+        "{'selection': {'rows': [1, 2, 3], 'columns': []}}",
     )
 
 
@@ -201,7 +205,7 @@ def test_multi_column_select(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-column selection:",
-        "{'select': {'rows': [], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
 
@@ -220,7 +224,7 @@ def _expect_multi_row_multi_column_selection(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row-multi-column selection:",
-        "{'select': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
 
@@ -243,7 +247,7 @@ def test_clear_selection_via_escape(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row-multi-column selection:",
-        "{'select': {'rows': [], 'columns': []}}",
+        "{'selection': {'rows': [], 'columns': []}}",
     )
 
 
@@ -267,7 +271,7 @@ def test_clear_selection_via_toolbar(app: Page):
     _expect_written_text(
         app,
         "Dataframe multi-row-multi-column selection:",
-        "{'select': {'rows': [], 'columns': []}}",
+        "{'selection': {'rows': [], 'columns': []}}",
     )
 
 
@@ -280,7 +284,7 @@ def test_in_form_selection_and_session_state(app: Page):
     _expect_written_text(
         app,
         _markdown_prefix,
-        "{'select': {'rows': [], 'columns': []}}",
+        "{'selection': {'rows': [], 'columns': []}}",
     )
 
     # submit the form. The selection uses a debounce of 200ms; if we click too early, the state is not updated correctly and we submit the old, unselected values
@@ -291,13 +295,13 @@ def test_in_form_selection_and_session_state(app: Page):
     _expect_written_text(
         app,
         _markdown_prefix,
-        "{'select': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
     _expect_written_text(
         app,
         _markdown_prefix,
-        "{'select': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
 
@@ -308,7 +312,7 @@ def test_multi_row_and_multi_column_selection_with_callback(app: Page):
     _expect_written_text(
         app,
         "Dataframe selection callback:",
-        "{'select': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
 
@@ -355,8 +359,45 @@ def test_multi_row_and_multi_column_selection_in_fragment(app: Page):
     _expect_written_text(
         app,
         "Dataframe-in-fragment selection:",
-        "{'select': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
+        "{'selection': {'rows': [0, 2], 'columns': ['col_1', 'col_3', 'col_4']}}",
     )
 
     # Check that the main script:
     expect(app.get_by_text("Runs: 1")).to_be_visible()
+
+
+def test_that_index_cannot_be_selected(app: Page):
+    canvas = _get_df_with_index(app)
+    canvas.scroll_into_view_if_needed()
+    # Try select a selectable columnÖ
+    _click_on_column_selector(canvas, 2)
+    wait_for_app_run(app)
+
+    # Check selection:
+    _expect_written_text(
+        app,
+        "No selection on index column:",
+        "{'selection': {'rows': [], 'columns': ['col_3']}}",
+    )
+
+    # Select index column:
+    _click_on_column_selector(canvas, 0)
+    wait_for_app_run(app)
+
+    # Nothing should be selected:
+    _expect_written_text(
+        app,
+        "No selection on index column:",
+        "{'selection': {'rows': [], 'columns': []}}",
+    )
+
+    # Try to click on another column and check that in can be selected:
+    _click_on_column_selector(canvas, 1)
+    wait_for_app_run(app)
+
+    # Check selection:
+    _expect_written_text(
+        app,
+        "No selection on index column:",
+        "{'selection': {'rows': [], 'columns': ['col_1']}}",
+    )
