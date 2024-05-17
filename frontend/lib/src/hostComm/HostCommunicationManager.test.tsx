@@ -62,6 +62,8 @@ describe("HostCommunicationManager messaging", () => {
       pageLinkBaseUrlChanged: jest.fn(),
       queryParamsChanged: jest.fn(),
       deployedAppMetadataChanged: jest.fn(),
+      restartWebsocketConnection: jest.fn(),
+      terminateWebsocketConnection: jest.fn(),
     })
 
     originalHash = window.location.hash
@@ -450,6 +452,38 @@ describe("HostCommunicationManager messaging", () => {
       // @ts-expect-error - props are private
       hostCommunicationMgr.props.jwtHeaderChanged
     ).toHaveBeenCalledWith(message.data)
+  })
+
+  it("can process a received RESTART_WEBSOCKET_CONNECTION message", () => {
+    const message = new MessageEvent("message", {
+      data: {
+        stCommVersion: HOST_COMM_VERSION,
+        type: "RESTART_WEBSOCKET_CONNECTION",
+      },
+      origin: "https://devel.streamlit.test",
+    })
+    dispatchEvent("message", message)
+
+    expect(
+      // @ts-expect-error - props are private
+      hostCommunicationMgr.props.restartWebsocketConnection
+    ).toHaveBeenCalled()
+  })
+
+  it("can process a received TERMINATE_WEBSOCKET_CONNECTION message", () => {
+    const message = new MessageEvent("message", {
+      data: {
+        stCommVersion: HOST_COMM_VERSION,
+        type: "TERMINATE_WEBSOCKET_CONNECTION",
+      },
+      origin: "https://devel.streamlit.test",
+    })
+    dispatchEvent("message", message)
+
+    expect(
+      // @ts-expect-error - props are private
+      hostCommunicationMgr.props.terminateWebsocketConnection
+    ).toHaveBeenCalled()
   })
 })
 
